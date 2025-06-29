@@ -4,7 +4,13 @@ const User = require("../models/User")
 
 const signup = async (req, res) => {
   try {
-    const { nickname, password } = req.body
+    const { nickname, password } = req.body || {}
+
+    if (!nickname || !password) {
+      return res.status(400).json({
+        error: "Both 'nickname' and 'password' are required.",
+      })
+    }
 
     const existingUser = await User.findOne({ nickname })
     if (existingUser)
@@ -24,7 +30,13 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { nickname, password } = req.body
+    const { nickname, password } = req.body || {}
+
+    if (!nickname || !password) {
+      return res.status(400).json({
+        error: "Both 'nickname' and 'password' are required.",
+      })
+    }
 
     const user = await User.findOne({ nickname })
     if (!user) return res.status(400).json({ msg: "Invalid credentials" })

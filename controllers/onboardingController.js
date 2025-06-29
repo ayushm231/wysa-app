@@ -4,7 +4,12 @@ const User = require("../models/User")
 const updateScreen = async (req, res) => {
   const screenNumber = parseInt(req.params.screen) // from URL like /screen1
   const screenKey = `screen${screenNumber}`
-  const { answer } = req.body
+  const { answer } = req.body || {}
+  if (!answer) {
+    return res
+      .status(400)
+      .json({ error: "Answer is required in the request body." })
+  }
 
   try {
     const user = await User.findById(req.user)
@@ -59,6 +64,7 @@ const getAllAnswers = async (req, res) => {
   }
 }
 
+// GET drop off stats
 const getDropoffStats = async (req, res) => {
   try {
     const users = await User.find({}, "completedScreens")
